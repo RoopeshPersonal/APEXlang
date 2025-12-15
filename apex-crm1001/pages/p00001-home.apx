@@ -13,7 +13,15 @@ page 1 (
         pageAccessProtection: argumentsMustHaveChecksum
         formAutoComplete: false
     }
-
+    
+    region myReg (
+        name: TEST 
+        type: staticContent
+        layout {
+            slot: BODY
+            sequence: 10
+        }
+    )
     region apex-crm (
         name: APEX CRM
         type: staticContent
