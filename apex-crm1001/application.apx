@@ -1,0 +1,55 @@
+app APEX-CRM1001 (
+    name: APEX CRM
+    advanced {
+        allowFeedback: true
+    }
+    authentication {
+        authenticationScheme: @oracle-apex-accounts
+    }
+    sessionStateProtection {
+        bookmarkHashFunction: sha2-512bit
+        checksumSalt: 683BBAE366DA5B8900807A75E9B50FD4B9B60D5A60BF3F079FB65CDD75BB82CA
+    }
+    databaseSession {
+        parsingSchema: APEX_AI_DAYS
+    }
+    appFormatMasks {
+        date: DS
+        timestamp: DS
+        timestampTimeZone: DS
+    }
+    logo {
+        text: APEX CRM
+    }
+    nav {
+        homeUrl: f?p=&APP_ID.:1:&APP_SESSION.::&DEBUG.:::
+        loginUrl: f?p=&APP_ID.:LOGIN:&APP_SESSION.::&DEBUG.:::
+    }
+    navMenu {
+        listTemplate: @/side-navigation-menu
+        templateOptions: [
+            #DEFAULT#
+            t-TreeNav--styleA
+            js-navCollapsed--hidden
+        ]
+        list: @navigation-menu
+    }
+    navBar {
+        list: @navigation-bar
+        listTemplate: @/navigation-bar
+        templateOptions: #DEFAULT#
+    }
+    attributes {
+        currentTheme: @universal-theme
+        globalPage: 0
+        addBuiltWithApexToFooter: false
+    }
+
+    substitution APP_NAME (
+        value {
+            staticValue: APEX CRM
+        }
+    )
+
+)
+
