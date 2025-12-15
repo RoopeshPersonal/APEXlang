@@ -1,0 +1,153 @@
+page 17 (
+    name: Lead States
+    alias: LEAD-STATES
+    title: Lead States
+    appearance {
+        pageTemplate: @/standard
+        templateOptions: #DEFAULT#
+    }
+    nav {
+        cursorFocus: doNotFocusCursor
+    }
+    security {
+        pageAccessProtection: argumentsMustHaveChecksum
+        formAutoComplete: false
+    }
+
+    region breadcrumb (
+        name: Breadcrumb
+        type: breadcrumb
+        source {
+            breadcrumb: @breadcrumb
+        }
+        layout {
+            sequence: 10
+            slot: REGION_POSITION_01
+        }
+        appearance {
+            template: @/title-bar
+            templateOptions: [
+                #DEFAULT#
+                t-BreadcrumbRegion--useBreadcrumbTitle
+            ]
+        }
+        componentAppearance {
+            breadcrumbTemplate: @/breadcrumb
+            templateOptions: #DEFAULT#
+        }
+    )
+
+    region lead-states (
+        name: Lead States
+        type: cards
+        source {
+            location: localDatabase
+            type: sqlQuery
+            sqlQuery: 
+                ```sql
+                SELECT  cl.lead_id, cl.created_on, cl.user_owner_id, cls.code
+                FROM    crm_leads cl 
+                join crm_lead_states cls 
+                on cl.lead_state_id = cls.lead_state_id 
+                WHERE   TRUNC(cl.created_on) BETWEEN DATE '2025-11-01'
+                                              AND DATE '2025-12-31'
+                AND     UPPER(cls.code) = 'NEW';
+                ```
+        }
+        orderBy {
+            type: item
+            item: "{ "itemName": "P17_ORDER_BY", "orderBys": [{"key":"CODE","expr":"\"CODE\" asc"},{"key":"CREATED_ON","expr":"\"CREATED_ON\" asc"}]}"
+        }
+        layout {
+            sequence: 10
+            slot: BODY
+        }
+        appearance {
+            template: @/cards-container
+            templateOptions: [
+                #DEFAULT#
+                t-CardsRegion--hideHeader js-addHiddenHeadingRoleDesc
+            ]
+        }
+        title {
+            column: CODE
+        }
+        body {
+            column: CREATED_ON
+        }
+    )
+
+    pageItem P17_LEAD_STATE (
+        type: hidden
+        settings {
+            valueProtected: false
+        }
+        layout {
+            sequence: 10
+            region: @lead-states
+            slot: BODY
+        }
+    )
+
+    pageItem P17_ORDER_BY (
+        type: selectList
+        label {
+            label: Order By
+            alignment: right
+        }
+        lov {
+            type: staticValues
+            staticValues: STATIC2:Code;CODE,Created On;CREATED_ON
+            displayExtraValues: false
+            displayNullValue: false
+        }
+        layout {
+            sequence: 10
+            region: @lead-states
+            slot: ORDER_BY_ITEM
+            alignment: left
+        }
+        appearance {
+            template: @/optional-floating
+            templateOptions: #DEFAULT#
+            height: 1
+        }
+        validation {
+            valueRequired: true
+        }
+        advanced {
+            warnOnUnsavedChanges: ignore
+        }
+        default {
+            type: static
+            staticValue: CODE
+        }
+    )
+
+    process new (
+        name: Populate Lead State
+        type: executeCode
+        source {
+            plsqlCode: 
+                ```plsql
+                BEGIN
+                   SELECT cls.code
+                   into :P17_LEAD_STATE
+                FROM    crm_leads cl 
+                join crm_lead_states cls 
+                on cl.lead_state_id = cls.lead_state_id 
+                WHERE  cl.lead_id = 1;
+                END;
+                ```
+        }
+        execution {
+            sequence: 10
+            point: beforeHeader
+        }
+        advanced {
+            executionMappingIdentifier: 15435267534126310
+        }
+    )
+
+)
+

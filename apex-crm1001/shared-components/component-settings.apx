@@ -1,0 +1,98 @@
+componentSetting NATIVE_OPEN_AI_ASSISTANT (
+    type: dynamicAction
+    settings {
+        attributes: {}
+    }
+)
+
+componentSetting NATIVE_COLOR_PICKER (
+    type: item
+    settings {
+        attributes: {"display_as":"POPUP","mode":"FULL"}
+    }
+)
+
+componentSetting NATIVE_DATE_PICKER_APEX (
+    type: item
+    settings {
+        attributes: {"appearance_behavior":"MONTH-PICKER:YEAR-PICKER:TODAY-BUTTON","days_outside_month":"VISIBLE","time_increment":"15","show_on":"FOCUS"}
+    }
+)
+
+componentSetting NATIVE_GEOCODED_ADDRESS (
+    type: item
+    settings {
+        attributes: {"match_mode":"RELAX_HOUSE_NUMBER","display_as":"LIST","map_preview":"POPUP:ITEM","background":"default"}
+    }
+)
+
+componentSetting NATIVE_SELECT_MANY (
+    type: item
+    settings {
+        attributes: {"display_values_as":"separated"}
+    }
+)
+
+componentSetting NATIVE_SINGLE_CHECKBOX (
+    type: item
+    settings {
+        attributes: {"checked_value":"Y","unchecked_value":"N"}
+    }
+)
+
+componentSetting NATIVE_STAR_RATING (
+    type: item
+    settings {
+        attributes: {"default_icon":"fa-star","tooltip":"#VALUE#"}
+    }
+)
+
+componentSetting NATIVE_YES_NO (
+    type: item
+    settings {
+        attributes: {"display_style":"SWITCH_CB","on_value":"Y","off_value":"N"}
+    }
+)
+
+componentSetting NATIVE_GEOCODING (
+    type: process
+    settings {
+        attributes: {"match_mode":"RELAX_HOUSE_NUMBER"}
+    }
+)
+
+componentSetting NATIVE_DISPLAY_SELECTOR (
+    type: region
+    settings {
+        attributes: {"include_slider":"Y"}
+    }
+)
+
+componentSetting NATIVE_IR (
+    type: region
+    settings {
+        attributes: {"actions_menu_structure":"IG"}
+    }
+)
+
+componentSetting NATIVE_MAP_REGION (
+    type: region
+    settings {
+        attributes: {"use_vector_tile_layers":"Y"}
+    }
+)
+
+componentSetting NATIVE_ADFBC (
+    type: restDataSource
+    settings {
+        attributes: {}
+    }
+)
+
+componentSetting NATIVE_BOSS (
+    type: restDataSource
+    settings {
+        attributes: {}
+    }
+)
+

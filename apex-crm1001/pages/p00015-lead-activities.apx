@@ -1,0 +1,146 @@
+page 15 (
+    name: Lead Activities
+    alias: LEAD-ACTIVITIES
+    title: Lead Activities
+    appearance {
+        pageTemplate: @/standard
+        templateOptions: #DEFAULT#
+    }
+    nav {
+        cursorFocus: doNotFocusCursor
+    }
+    security {
+        pageAccessProtection: argumentsMustHaveChecksum
+        formAutoComplete: false
+    }
+
+    region breadcrumb (
+        name: Breadcrumb
+        type: breadcrumb
+        source {
+            breadcrumb: @breadcrumb
+        }
+        layout {
+            sequence: 10
+            slot: REGION_POSITION_01
+        }
+        appearance {
+            template: @/title-bar
+            templateOptions: [
+                #DEFAULT#
+                t-BreadcrumbRegion--useBreadcrumbTitle
+            ]
+        }
+        componentAppearance {
+            breadcrumbTemplate: @/breadcrumb
+            templateOptions: #DEFAULT#
+        }
+    )
+
+    region lead-activities (
+        name: Lead Activities
+        type: classicReport
+        source {
+            location: localDatabase
+            type: sqlQuery
+            sqlQuery: 
+                ```sql
+                -- For each lead, compute counts with correlated subqueries
+                SELECT  l.lead_id,
+                        l.USER_OWNER_ID,
+                        (SELECT COUNT(*) 
+                         FROM   crm_activity_logs a
+                         WHERE  a.USER_ID = l.USER_OWNER_ID
+                         AND    a.ACTIVITY_TYPE = 'CALL') AS call_count,
+                        (SELECT COUNT(*)
+                         FROM   crm_activity_logs a
+                         WHERE  a.USER_ID = l.USER_OWNER_ID
+                         AND    a.ACTIVITY_TYPE = 'EMAIL') AS email_count
+                FROM    crm_leads l
+                WHERE   l.STATE = 'OPEN'
+                ```
+        }
+        layout {
+            sequence: 10
+            slot: BODY
+        }
+        appearance {
+            template: @/standard
+            templateOptions: [
+                #DEFAULT#
+                t-Region--noPadding
+                t-Region--hideHeader js-addHiddenHeadingRoleDesc
+                t-Region--scrollBody
+            ]
+        }
+        componentAppearance {
+            template: @/standard
+            templateOptions: [
+                #DEFAULT#
+                t-Report--stretch
+                t-Report--staticRowColors
+                t-Report--rowHighlight
+                t-Report--inline
+                t-Report--hideNoPagination
+            ]
+        }
+        messages {
+            whenNoDataFound: no data found
+        }
+
+        column CALL_COUNT (
+            reportColQueryId: 3
+            derivedCol: N
+            heading {
+                heading: Call Count
+                alignment: end
+            }
+            layout {
+                sequence: 3
+                colAlignment: end
+            }
+        )
+
+        column EMAIL_COUNT (
+            reportColQueryId: 4
+            derivedCol: N
+            heading {
+                heading: Email Count
+                alignment: end
+            }
+            layout {
+                sequence: 4
+                colAlignment: end
+            }
+        )
+
+        column LEAD_ID (
+            reportColQueryId: 1
+            derivedCol: N
+            heading {
+                heading: Lead Id
+                alignment: end
+            }
+            layout {
+                sequence: 1
+                colAlignment: end
+            }
+        )
+
+        column USER_OWNER_ID (
+            reportColQueryId: 2
+            derivedCol: N
+            heading {
+                heading: User Owner Id
+                alignment: end
+            }
+            layout {
+                sequence: 2
+                colAlignment: end
+            }
+        )
+
+    )
+
+)
+

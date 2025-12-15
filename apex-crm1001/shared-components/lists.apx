@@ -1,0 +1,260 @@
+list navigation-bar (
+    name: Navigation Bar
+
+    entry --- (
+        label: ---
+        layout {
+            sequence: 20
+            parentEntry: @app-user
+        }
+        link {
+            target: separator
+        }
+        serverSideCondition {
+            type: userIsAuthenticated
+        }
+    )
+
+    entry app-user (
+        label: &APP_USER.
+        icon {
+            imageIconCssClasses: fa-user
+        }
+        layout {
+            sequence: 10
+        }
+        link {
+            target: #
+        }
+        userDefinedAttributes {
+            1: &APP_USER_INITIALS.
+            2: has-username
+        }
+    )
+
+    entry sign-out (
+        label: Sign Out
+        icon {
+            imageIconCssClasses: fa-sign-out
+        }
+        layout {
+            sequence: 30
+            parentEntry: @app-user
+        }
+        link {
+            target: &LOGOUT_URL.
+        }
+        serverSideCondition {
+            type: userIsAuthenticated
+        }
+    )
+
+)
+
+list navigation-menu (
+    name: Navigation Menu
+
+    entry administration (
+        label: Administration
+        icon {
+            imageIconCssClasses: fa-cogs
+        }
+        layout {
+            sequence: 100
+        }
+    )
+
+    entry contacts (
+        label: Contacts
+        icon {
+            imageIconCssClasses: fa-id-badge
+        }
+        layout {
+            sequence: 40
+        }
+        link {
+            target: f?p=&APP_ID.:6:&APP_SESSION.::&DEBUG.:::
+        }
+    )
+
+    entry crm-map (
+        label: CRM Map
+        icon {
+            imageIconCssClasses: fa-map
+        }
+        layout {
+            sequence: 25
+        }
+        link {
+            target: f?p=&APP_ID.:14:&APP_SESSION.::&DEBUG.:::
+        }
+    )
+
+    entry customer-engagements-calendar (
+        label: Customer Engagements Calendar
+        icon {
+            imageIconCssClasses: fa-calendar
+        }
+        layout {
+            sequence: 60
+        }
+        isCurrent {
+            type: pages
+            pages: 20
+        }
+        link {
+            target: f?p=&APP_ID.:20:&APP_SESSION.::&DEBUG.:::
+        }
+    )
+
+    entry customer-order-products (
+        label: Customer order products
+        icon {
+            imageIconCssClasses: fa-table
+        }
+        layout {
+            sequence: 160
+        }
+        isCurrent {
+            type: pages
+            pages: 18
+        }
+        link {
+            target: f?p=&APP_ID.:18:&APP_SESSION.::&DEBUG.:::
+        }
+    )
+
+    entry customers (
+        label: Customers
+        icon {
+            imageIconCssClasses: fa-users
+        }
+        layout {
+            sequence: 30
+        }
+        link {
+            target: f?p=&APP_ID.:4:&APP_SESSION.::&DEBUG.:::
+        }
+    )
+
+    entry home (
+        label: Home
+        icon {
+            imageIconCssClasses: fa-home
+        }
+        layout {
+            sequence: 10
+        }
+        link {
+            target: f?p=&APP_ID.:1:&APP_SESSION.::&DEBUG.:::
+        }
+    )
+
+    entry lead-activities (
+        label: Lead Activities
+        icon {
+            imageIconCssClasses: fa-table
+        }
+        layout {
+            sequence: 140
+        }
+        isCurrent {
+            type: pages
+            pages: 15
+        }
+        link {
+            target: f?p=&APP_ID.:15:&APP_SESSION.::&DEBUG.:::
+        }
+    )
+
+    entry lead-sources (
+        label: Lead Sources
+        icon {
+            imageIconCssClasses: fa-list
+        }
+        layout {
+            sequence: 130
+            parentEntry: @administration
+        }
+        link {
+            target: f?p=&APP_ID.:12:&APP_SESSION.::&DEBUG.:::
+        }
+    )
+
+    entry lead-states (
+        label: Lead States
+        icon {
+            imageIconCssClasses: fa-list
+        }
+        layout {
+            sequence: 120
+            parentEntry: @administration
+        }
+        link {
+            target: f?p=&APP_ID.:10:&APP_SESSION.::&DEBUG.:::
+        }
+    )
+
+    entry lead-states-2 (
+        label: Lead States
+        icon {
+            imageIconCssClasses: fa-cards
+        }
+        layout {
+            sequence: 150
+        }
+        isCurrent {
+            type: pages
+            pages: 17
+        }
+        link {
+            target: f?p=&APP_ID.:17:&APP_SESSION.::&DEBUG.:::
+        }
+    )
+
+    entry lead-types (
+        label: Lead Types
+        icon {
+            imageIconCssClasses: fa-list
+        }
+        layout {
+            sequence: 110
+            parentEntry: @administration
+        }
+        link {
+            target: f?p=&APP_ID.:8:&APP_SESSION.::&DEBUG.:::
+        }
+    )
+
+    entry leads (
+        label: Leads
+        icon {
+            imageIconCssClasses: fa-address-card
+        }
+        layout {
+            sequence: 20
+        }
+        link {
+            target: f?p=&APP_ID.:2:&APP_SESSION.::&DEBUG.:::
+        }
+    )
+
+    entry revenue-report (
+        label: Revenue Report
+        icon {
+            imageIconCssClasses: fa-chart-bar
+        }
+        layout {
+            sequence: 50
+        }
+        isCurrent {
+            type: pages
+            pages: 19
+        }
+        link {
+            target: f?p=&APP_ID.:19:&APP_SESSION.::&DEBUG.:::
+        }
+    )
+
+)
+

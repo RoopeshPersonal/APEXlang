@@ -1,0 +1,192 @@
+breadcrumb breadcrumb (
+    name: Breadcrumb
+
+    entry contact-details (
+        name: Contact Details
+        pageNo: 7
+        execution {
+            sequence: 70
+        }
+        link {
+            target: f?p=&APP_ID.:7:&APP_SESSION.::&DEBUG.:::
+        }
+    )
+
+    entry contacts (
+        name: Contacts
+        pageNo: 6
+        execution {
+            sequence: 60
+        }
+        link {
+            target: f?p=&APP_ID.:6:&APP_SESSION.::&DEBUG.:::
+        }
+    )
+
+    entry crm-map (
+        name: CRM Map
+        pageNo: 14
+        execution {
+            sequence: 25
+        }
+        link {
+            target: f?p=&APP_ID.:14:&APP_SESSION.::&DEBUG.:::
+        }
+    )
+
+    entry customer-details (
+        name: Customer Details
+        pageNo: 5
+        execution {
+            sequence: 50
+        }
+        link {
+            target: f?p=&APP_ID.:5:&APP_SESSION.::&DEBUG.:::
+        }
+    )
+
+    entry customer-engagements-calendar (
+        name: Customer Engagements Calendar
+        pageNo: 20
+        execution {
+            sequence: 120
+        }
+        link {
+            target: f?p=&APP_ID.:20:&APP_SESSION.::&DEBUG.:::
+        }
+    )
+
+    entry customer-order-products (
+        name: Customer order products
+        pageNo: 18
+        execution {
+            sequence: 10
+        }
+        link {
+            target: f?p=&APP_ID.:18:&APP_SESSION.::&DEBUG.:::
+        }
+    )
+
+    entry customers (
+        name: Customers
+        pageNo: 4
+        execution {
+            sequence: 40
+        }
+        link {
+            target: f?p=&APP_ID.:4:&APP_SESSION.::&DEBUG.:::
+        }
+    )
+
+    entry home (
+        name: Home
+        pageNo: 1
+        execution {
+            sequence: 10
+        }
+        link {
+            target: f?p=&APP_ID.:1:&APP_SESSION.::&DEBUG.:::
+        }
+    )
+
+    entry lead-activities (
+        name: Lead Activities
+        pageNo: 15
+        execution {
+            sequence: 10
+        }
+        link {
+            target: f?p=&APP_ID.:15:&APP_SESSION.::&DEBUG.:::
+        }
+    )
+
+    entry lead-details (
+        name: Lead Details
+        pageNo: 3
+        execution {
+            sequence: 30
+        }
+        link {
+            target: f?p=&APP_ID.:3:&APP_SESSION.::&DEBUG.:::
+        }
+    )
+
+    entry lead-source-details (
+        name: Lead Source Details
+        pageNo: 13
+        execution {
+            sequence: 100
+        }
+        link {
+            target: f?p=&APP_ID.:13:&APP_SESSION.::&DEBUG.:::
+        }
+    )
+
+    entry lead-state-details (
+        name: Lead State Details
+        pageNo: 11
+        execution {
+            sequence: 90
+        }
+        link {
+            target: f?p=&APP_ID.:11:&APP_SESSION.::&DEBUG.:::
+        }
+    )
+
+    entry lead-states (
+        name: Lead States
+        pageNo: 17
+        execution {
+            sequence: 10
+        }
+        link {
+            target: f?p=&APP_ID.:17:&APP_SESSION.::&DEBUG.:::
+        }
+    )
+
+    entry lead-type-details (
+        name: Lead Type Details
+        pageNo: 9
+        execution {
+            sequence: 80
+        }
+        link {
+            target: f?p=&APP_ID.:9:&APP_SESSION.::&DEBUG.:::
+        }
+    )
+
+    entry leads (
+        name: Leads
+        pageNo: 2
+        execution {
+            sequence: 20
+        }
+        link {
+            target: f?p=&APP_ID.:2:&APP_SESSION.::&DEBUG.:::
+        }
+    )
+
+    entry leads-interactive-report (
+        name: Leads Interactive Report
+        pageNo: 15
+        execution {
+            sequence: 26
+        }
+        link {
+            target: f?p=&APP_ID.:15:&APP_SESSION.::&DEBUG.:::
+        }
+    )
+
+    entry revenue-report (
+        name: Revenue Report
+        pageNo: 19
+        execution {
+            sequence: 110
+        }
+        link {
+            target: f?p=&APP_ID.:19:&APP_SESSION.::&DEBUG.:::
+        }
+    )
+
+)
+

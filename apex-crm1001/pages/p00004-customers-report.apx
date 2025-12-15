@@ -1,0 +1,113 @@
+page 4 (
+    name: Customers
+    alias: CUSTOMERS-REPORT
+    title: Customers
+    appearance {
+        pageTemplate: @/standard
+        templateOptions: #DEFAULT#
+    }
+    nav {
+        cursorFocus: doNotFocusCursor
+    }
+    security {
+        pageAccessProtection: argumentsMustHaveChecksum
+        formAutoComplete: false
+    }
+
+    region customers (
+        name: Customers
+        type: cards
+        source {
+            location: localDatabase
+            tableName: CRM_CUSTOMERS
+        }
+        layout {
+            sequence: 10
+            slot: BODY
+        }
+        appearance {
+            template: @/cards-container
+            templateOptions: [
+                #DEFAULT#
+                t-CardsRegion--hideHeader js-addHiddenHeadingRoleDesc
+            ]
+        }
+        title {
+            column: NAME
+        }
+        subtitle {
+            column: INDUSTRY
+        }
+        body {
+            advancedFormatting: true
+            htmlExpression: 
+                ```html
+                Status: &CUSTOMER_STATUS_ID.<br>
+                Priority: &CUSTOMER_PRIORITY_ID.<br>
+                Owner: &USER_OWNER_ID.<br>
+                Branch: &BRANCH_ID.<br>
+                Account: &ACCOUNT_ID.<br>
+                Website: &WEBSITE.
+                ```
+        }
+
+        action action (
+            type: fullCard
+            layout {
+                sequence: 10
+            }
+            behavior {
+                target: f?p=&APP_ID.:5:&APP_SESSION.::&DEBUG.::P5_CUSTOMER_ID:&CUSTOMER_ID.
+            }
+        )
+
+    )
+
+    button create (
+        buttonName: CREATE
+        label: Create
+        layout {
+            sequence: 10
+            region: @customers
+            slot: RIGHT_OF_IR_SEARCH_BAR
+        }
+        appearance {
+            buttonTemplate: @/text
+            hot: true
+            templateOptions: #DEFAULT#
+        }
+        behavior {
+            action: redirectThisApp
+            target: f?p=&APP_ID.:5:&APP_SESSION.::&DEBUG.:5::
+            warnOnUnsavedChanges: doNotCheck
+        }
+    )
+
+    dynamicAction edit-report-dialog-closed (
+        name: Edit Report - Dialog Closed
+        execution {
+            sequence: 10
+        }
+        when {
+            event: apexafterclosedialog
+            selectionType: region
+            region: @customers
+        }
+
+        action native-refresh (
+            action: refresh
+            affectedElements {
+                selectionType: region
+                region: @customers
+            }
+            execution {
+                sequence: 10
+                event: @edit-report-dialog-closed
+                fireOnInit: false
+            }
+        )
+
+    )
+
+)
+

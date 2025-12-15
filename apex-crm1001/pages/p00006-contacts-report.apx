@@ -1,0 +1,110 @@
+page 6 (
+    name: Contacts
+    alias: CONTACTS-REPORT
+    title: Contacts
+    appearance {
+        pageTemplate: @/standard
+        templateOptions: #DEFAULT#
+    }
+    nav {
+        cursorFocus: doNotFocusCursor
+    }
+    security {
+        pageAccessProtection: argumentsMustHaveChecksum
+        formAutoComplete: false
+    }
+
+    region contacts (
+        name: Contacts
+        type: cards
+        source {
+            location: localDatabase
+            tableName: CRM_CONTACTS
+        }
+        layout {
+            sequence: 10
+            slot: BODY
+        }
+        appearance {
+            template: @/cards-container
+            templateOptions: [
+                #DEFAULT#
+                t-CardsRegion--hideHeader js-addHiddenHeadingRoleDesc
+            ]
+        }
+        title {
+            column: NAME
+        }
+        subtitle {
+            column: DESIGNATION
+        }
+        body {
+            advancedFormatting: true
+            htmlExpression: 
+                ```html
+                Email: &EMAIL.<br>
+                Phone: &PHONE.<br>
+                Account: &ACCOUNT_ID.
+                ```
+        }
+
+        action action (
+            type: fullCard
+            layout {
+                sequence: 10
+            }
+            behavior {
+                target: f?p=&APP_ID.:7:&APP_SESSION.::&DEBUG.::P7_CONTACT_ID:&CONTACT_ID.
+            }
+        )
+
+    )
+
+    button create (
+        buttonName: CREATE
+        label: Create
+        layout {
+            sequence: 10
+            region: @contacts
+            slot: RIGHT_OF_IR_SEARCH_BAR
+        }
+        appearance {
+            buttonTemplate: @/text
+            hot: true
+            templateOptions: #DEFAULT#
+        }
+        behavior {
+            action: redirectThisApp
+            target: f?p=&APP_ID.:7:&APP_SESSION.::&DEBUG.:7::
+            warnOnUnsavedChanges: doNotCheck
+        }
+    )
+
+    dynamicAction edit-report-dialog-closed (
+        name: Edit Report - Dialog Closed
+        execution {
+            sequence: 10
+        }
+        when {
+            event: apexafterclosedialog
+            selectionType: region
+            region: @contacts
+        }
+
+        action native-refresh (
+            action: refresh
+            affectedElements {
+                selectionType: region
+                region: @contacts
+            }
+            execution {
+                sequence: 10
+                event: @edit-report-dialog-closed
+                fireOnInit: false
+            }
+        )
+
+    )
+
+)
+

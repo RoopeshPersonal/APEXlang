@@ -1,0 +1,281 @@
+page 8 (
+    name: Lead Types
+    alias: LEAD-TYPES-REPORT
+    title: Lead Types
+    appearance {
+        pageTemplate: @/standard
+        templateOptions: #DEFAULT#
+    }
+    nav {
+        cursorFocus: doNotFocusCursor
+    }
+    security {
+        pageAccessProtection: argumentsMustHaveChecksum
+        formAutoComplete: false
+    }
+
+    region breadcrumb (
+        name: Breadcrumb
+        type: breadcrumb
+        source {
+            breadcrumb: @breadcrumb
+        }
+        layout {
+            sequence: 10
+            slot: REGION_POSITION_01
+        }
+        appearance {
+            template: @/title-bar
+            templateOptions: [
+                #DEFAULT#
+                t-BreadcrumbRegion--useBreadcrumbTitle
+            ]
+        }
+        componentAppearance {
+            breadcrumbTemplate: @/breadcrumb
+            templateOptions: #DEFAULT#
+        }
+    )
+
+    region interactive-report (
+        name: Lead Types
+        type: interactiveReport
+        source {
+            location: localDatabase
+            type: sqlQuery
+            sqlQuery: 
+                ```sql
+                select
+                  lead_type_id,
+                  '<span class="code">'||code||'<span>' code,
+                  description,
+                  row_version,
+                  created_on,
+                  created_by,
+                  updated_on,
+                  updated_by
+                from
+                  crm_lead_types
+                ```
+        }
+        layout {
+            sequence: 10
+            slot: BODY
+        }
+        appearance {
+            template: @/interactive-report
+            templateOptions: [
+                #DEFAULT#
+                t-IRR-region--hideHeader js-addHiddenHeadingRoleDesc
+            ]
+        }
+        link {
+            linkCol: customTarget
+            target: f?p=&APP_ID.:9:&APP_SESSION.::&DEBUG.:RP:P9_LEAD_TYPE_ID:#LEAD_TYPE_ID#
+            linkIcon: <span role="img" aria-label="Edit" class="fa fa-edit" title="Edit"></span>
+        }
+        pagination {
+            type: rowRangesXToY
+        }
+        advanced {
+            savedReportMappingIdentifier: 4431467158675443
+        }
+
+        column CODE (
+            type: plainText
+            heading {
+                heading: Code
+            }
+            layout {
+                sequence: 20
+            }
+            source {
+                dataType: STRING
+            }
+            advanced {
+                colAlias: B
+            }
+        )
+
+        column CREATED_BY (
+            type: plainText
+            heading {
+                heading: Created By
+            }
+            layout {
+                sequence: 60
+            }
+            source {
+                dataType: STRING
+            }
+            advanced {
+                colAlias: F
+            }
+        )
+
+        column CREATED_ON (
+            type: plainText
+            heading {
+                heading: Created On
+            }
+            layout {
+                sequence: 50
+            }
+            source {
+                dataType: DATE
+            }
+            advanced {
+                colAlias: E
+            }
+        )
+
+        column DESCRIPTION (
+            type: plainText
+            heading {
+                heading: Description
+            }
+            layout {
+                sequence: 30
+            }
+            source {
+                dataType: STRING
+            }
+            advanced {
+                colAlias: C
+            }
+        )
+
+        column LEAD_TYPE_ID (
+            type: hidden
+            heading {
+                heading: Lead Type ID
+            }
+            layout {
+                sequence: 10
+            }
+            source {
+                primaryKey: true
+                dataType: NUMBER
+            }
+            advanced {
+                colAlias: A
+            }
+        )
+
+        column ROW_VERSION (
+            type: plainText
+            heading {
+                heading: Row Version
+            }
+            layout {
+                sequence: 40
+            }
+            source {
+                dataType: NUMBER
+            }
+            advanced {
+                colAlias: D
+            }
+        )
+
+        column UPDATED_BY (
+            type: plainText
+            heading {
+                heading: Updated By
+            }
+            layout {
+                sequence: 80
+            }
+            source {
+                dataType: STRING
+            }
+            advanced {
+                colAlias: H
+            }
+        )
+
+        column UPDATED_ON (
+            type: plainText
+            heading {
+                heading: Updated On
+            }
+            layout {
+                sequence: 70
+            }
+            source {
+                dataType: DATE
+            }
+            advanced {
+                colAlias: G
+            }
+        )
+
+        page {
+            borderWidth: 0.5
+            borderColor: #666666
+        }
+
+        savedReport 96289 (
+            visibility: primaryDefault
+            name: Primary Report
+            view {
+                rowsPerPage: 50
+            }
+
+            column CODE (
+                sequence: 2
+            )
+
+            column CREATED_BY (
+                sequence: 6
+            )
+
+            column CREATED_ON (
+                sequence: 5
+            )
+
+            column DESCRIPTION (
+                sequence: 3
+            )
+
+            column LEAD_TYPE_ID (
+                sequence: 1
+            )
+
+            column ROW_VERSION (
+                sequence: 4
+            )
+
+            column UPDATED_BY (
+                sequence: 8
+            )
+
+            column UPDATED_ON (
+                sequence: 7
+            )
+
+        )
+
+    )
+
+    button create-lead-type (
+        buttonName: CREATE_LEAD_TYPE
+        label: Create
+        layout {
+            sequence: 20
+            slot: REGION_POSITION_02
+        }
+        appearance {
+            buttonTemplate: @/text
+            hot: true
+            templateOptions: #DEFAULT#
+        }
+        behavior {
+            action: redirectThisApp
+            target: f?p=&APP_ID.:9:&APP_SESSION.::&DEBUG.:9
+            warnOnUnsavedChanges: doNotCheck
+        }
+    )
+
+)
+

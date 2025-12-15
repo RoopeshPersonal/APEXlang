@@ -1,0 +1,112 @@
+page 2 (
+    name: Leads
+    alias: LEADS-REPORT
+    title: Leads
+    appearance {
+        pageTemplate: @/standard
+        templateOptions: #DEFAULT#
+    }
+    nav {
+        cursorFocus: doNotFocusCursor
+    }
+    security {
+        pageAccessProtection: argumentsMustHaveChecksum
+        formAutoComplete: false
+    }
+
+    region leads (
+        name: Leads
+        type: cards
+        source {
+            location: localDatabase
+            tableName: CRM_LEADS
+        }
+        layout {
+            sequence: 10
+            slot: BODY
+        }
+        appearance {
+            template: @/cards-container
+            templateOptions: [
+                #DEFAULT#
+                t-CardsRegion--hideHeader js-addHiddenHeadingRoleDesc
+            ]
+        }
+        title {
+            column: CITY
+        }
+        subtitle {
+            column: DETAILS
+        }
+        body {
+            advancedFormatting: true
+            htmlExpression: 
+                ```html
+                Lead Type: &LEAD_TYPE_ID.<br>
+                Owner: &USER_OWNER_ID.<br>
+                Budget: &BUDGET.<br>
+                State: &STATE.<br>
+                Status Date: &STATUS_DATE.
+                ```
+        }
+
+        action action (
+            type: fullCard
+            layout {
+                sequence: 10
+            }
+            behavior {
+                target: f?p=&APP_ID.:3:&APP_SESSION.::&DEBUG.::P3_LEAD_ID:&LEAD_ID.
+            }
+        )
+
+    )
+
+    button create (
+        buttonName: CREATE
+        label: Create
+        layout {
+            sequence: 10
+            region: @leads
+            slot: RIGHT_OF_IR_SEARCH_BAR
+        }
+        appearance {
+            buttonTemplate: @/text
+            hot: true
+            templateOptions: #DEFAULT#
+        }
+        behavior {
+            action: redirectThisApp
+            target: f?p=&APP_ID.:3:&APP_SESSION.::&DEBUG.:3::
+            warnOnUnsavedChanges: doNotCheck
+        }
+    )
+
+    dynamicAction edit-report-dialog-closed (
+        name: Edit Report - Dialog Closed
+        execution {
+            sequence: 10
+        }
+        when {
+            event: apexafterclosedialog
+            selectionType: region
+            region: @leads
+        }
+
+        action native-refresh (
+            action: refresh
+            affectedElements {
+                selectionType: region
+                region: @leads
+            }
+            execution {
+                sequence: 10
+                event: @edit-report-dialog-closed
+                fireOnInit: false
+            }
+        )
+
+    )
+
+)
+

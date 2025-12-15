@@ -1,0 +1,395 @@
+page 11 (
+    name: Lead State Details
+    alias: LEAD-STATES-FORM
+    title: Lead State Details
+    appearance {
+        pageMode: modalDialog
+        dialogTemplate: @/drawer
+        templateOptions: [
+            #DEFAULT#
+            js-dialog-class-t-Drawer--pullOutEnd
+        ]
+    }
+    dialog {
+        chained: false
+    }
+    nav {
+        cursorFocus: doNotFocusCursor
+    }
+    security {
+        pageAccessProtection: argumentsMustHaveChecksum
+        formAutoComplete: false
+    }
+
+    region buttons (
+        name: Buttons
+        type: staticContent
+        layout {
+            sequence: 20
+            slot: REGION_POSITION_03
+        }
+        appearance {
+            template: @/buttons-container
+            templateOptions: #DEFAULT#
+        }
+    )
+
+    region lead-states-details (
+        name: Lead State Details
+        type: form
+        source {
+            location: localDatabase
+            tableName: CRM_LEAD_STATES
+        }
+        layout {
+            sequence: 10
+            slot: BODY
+        }
+        appearance {
+            template: @/blank-with-attributes
+            templateOptions: #DEFAULT#
+        }
+        edit {
+            enabled: true
+            allowedOperations: [
+                add
+                update
+                delete
+            ]
+        }
+    )
+
+    pageItem P11_CODE (
+        type: textField
+        label {
+            label: Code
+            alignment: right
+        }
+        layout {
+            sequence: 20
+            region: @lead-states-details
+            slot: BODY
+            alignment: left
+        }
+        appearance {
+            template: @/optional-floating
+            templateOptions: #DEFAULT#
+            width: 32
+        }
+        validation {
+            maxLength: 32
+        }
+        source {
+            formRegion: @lead-states-details
+            column: CODE
+            dataType: varchar2
+        }
+    )
+
+    pageItem P11_CREATED_BY (
+        type: textField
+        label {
+            label: Created By
+            alignment: right
+        }
+        layout {
+            sequence: 60
+            region: @lead-states-details
+            slot: BODY
+            alignment: left
+        }
+        appearance {
+            template: @/optional-floating
+            templateOptions: #DEFAULT#
+            width: 32
+        }
+        source {
+            formRegion: @lead-states-details
+            column: CREATED_BY
+            dataType: varchar2
+        }
+    )
+
+    pageItem P11_CREATED_ON (
+        type: textField
+        label {
+            label: Created On
+            alignment: right
+        }
+        layout {
+            sequence: 50
+            region: @lead-states-details
+            slot: BODY
+            alignment: left
+        }
+        appearance {
+            template: @/optional-floating
+            templateOptions: #DEFAULT#
+            width: 32
+        }
+        source {
+            formRegion: @lead-states-details
+            column: CREATED_ON
+            dataType: date
+        }
+    )
+
+    pageItem P11_DESCRIPTION (
+        type: textField
+        label {
+            label: Description
+            alignment: right
+        }
+        layout {
+            sequence: 30
+            region: @lead-states-details
+            slot: BODY
+            alignment: left
+        }
+        appearance {
+            template: @/optional-floating
+            templateOptions: #DEFAULT#
+            width: 64
+        }
+        validation {
+            maxLength: 255
+        }
+        source {
+            formRegion: @lead-states-details
+            column: DESCRIPTION
+            dataType: varchar2
+        }
+    )
+
+    pageItem P11_LEAD_STATE_ID (
+        type: hidden
+        layout {
+            sequence: 10
+            region: @lead-states-details
+            slot: BODY
+        }
+        source {
+            formRegion: @lead-states-details
+            column: LEAD_STATE_ID
+            dataType: number
+            queryOnly: true
+            primaryKey: true
+        }
+        security {
+            sessionStateProtection: checksumRequiredSessionLevel
+        }
+    )
+
+    pageItem P11_ROW_VERSION (
+        type: numberField
+        label {
+            label: Row Version
+            alignment: right
+        }
+        layout {
+            sequence: 40
+            region: @lead-states-details
+            slot: BODY
+            alignment: left
+        }
+        appearance {
+            template: @/optional-floating
+            templateOptions: #DEFAULT#
+            width: 16
+        }
+        source {
+            formRegion: @lead-states-details
+            column: ROW_VERSION
+            dataType: number
+        }
+    )
+
+    pageItem P11_UPDATED_BY (
+        type: textField
+        label {
+            label: Updated By
+            alignment: right
+        }
+        layout {
+            sequence: 80
+            region: @lead-states-details
+            slot: BODY
+            alignment: left
+        }
+        appearance {
+            template: @/optional-floating
+            templateOptions: #DEFAULT#
+            width: 32
+        }
+        source {
+            formRegion: @lead-states-details
+            column: UPDATED_BY
+            dataType: varchar2
+        }
+    )
+
+    pageItem P11_UPDATED_ON (
+        type: textField
+        label {
+            label: Updated On
+            alignment: right
+        }
+        layout {
+            sequence: 70
+            region: @lead-states-details
+            slot: BODY
+            alignment: left
+        }
+        appearance {
+            template: @/optional-floating
+            templateOptions: #DEFAULT#
+            width: 32
+        }
+        source {
+            formRegion: @lead-states-details
+            column: UPDATED_ON
+            dataType: date
+        }
+    )
+
+    button cancel (
+        buttonName: CANCEL
+        label: Cancel
+        layout {
+            sequence: 10
+            region: @buttons
+            slot: CLOSE
+        }
+        appearance {
+            buttonTemplate: @/text
+            templateOptions: #DEFAULT#
+        }
+        behavior {
+            action: triggerAction
+        }
+
+        triggerAction native-dialog-cancel (
+            action: cancelDialog
+            execution {
+                sequence: 10
+            }
+        )
+
+    )
+
+    button create (
+        buttonName: CREATE
+        label: Create
+        layout {
+            sequence: 40
+            region: @buttons
+            slot: NEXT
+        }
+        appearance {
+            buttonTemplate: @/text
+            hot: true
+            templateOptions: #DEFAULT#
+        }
+        behavior {
+            warnOnUnsavedChanges: doNotCheck
+            databaseAction: insert
+        }
+        serverSideCondition {
+            type: itemIsNull
+            item: P11_LEAD_STATE_ID
+        }
+    )
+
+    button delete (
+        buttonName: DELETE
+        label: Delete
+        layout {
+            sequence: 20
+            region: @buttons
+            slot: DELETE
+        }
+        appearance {
+            buttonTemplate: @/text
+            templateOptions: #DEFAULT#
+        }
+        behavior {
+            executeValidations: false
+            warnOnUnsavedChanges: doNotCheck
+            databaseAction: delete
+            requiresConfirmation: true
+        }
+        confirmation {
+            message: &APP_TEXT$DELETE_MSG!RAW.
+            style: danger
+        }
+        serverSideCondition {
+            type: itemIsNotNull
+            item: P11_LEAD_STATE_ID
+        }
+    )
+
+    button save (
+        buttonName: SAVE
+        label: Apply Changes
+        layout {
+            sequence: 30
+            region: @buttons
+            slot: NEXT
+        }
+        appearance {
+            buttonTemplate: @/text
+            hot: true
+            templateOptions: #DEFAULT#
+        }
+        behavior {
+            warnOnUnsavedChanges: doNotCheck
+            databaseAction: update
+        }
+        serverSideCondition {
+            type: itemIsNotNull
+            item: P11_LEAD_STATE_ID
+        }
+    )
+
+    process close-dialog (
+        name: Close Dialog
+        type: closeDialog
+        execution {
+            sequence: 50
+        }
+        advanced {
+            executionMappingIdentifier: 2466327973083865
+        }
+        serverSideCondition {
+            type: requestIsContainedInValue
+            value: CREATE,SAVE,DELETE
+        }
+    )
+
+    process initialize-form-lead-states-details (
+        name: Initialize form Lead States Details
+        type: formInitialization
+        formRegion: @lead-states-details
+        execution {
+            sequence: 10
+            point: beforeHeader
+        }
+        advanced {
+            executionMappingIdentifier: 2465526758083864
+        }
+    )
+
+    process process-form-lead-states-details (
+        name: Process form Lead States Details
+        type: formAutoRowProcessing
+        formRegion: @lead-states-details
+        execution {
+            sequence: 10
+        }
+        advanced {
+            executionMappingIdentifier: 2465987215083865
+        }
+    )
+
+)
+

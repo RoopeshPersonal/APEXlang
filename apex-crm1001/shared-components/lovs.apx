@@ -1,0 +1,178 @@
+lov activity-types (
+    name: ACTIVITY_TYPES
+    source {
+        location: staticValues
+    }
+
+    entry call (
+        sequence: 3
+        display: Call
+        return: Call
+    )
+
+    entry email (
+        sequence: 4
+        display: Email
+        return: Email
+    )
+
+    entry follow-up (
+        sequence: 1
+        display: Follow-up
+        return: Follow-up
+    )
+
+    entry in-person-visit (
+        sequence: 2
+        display: In-Person Visit
+        return: In-Person Visit
+    )
+
+    entry meeting (
+        sequence: 5
+        display: Meeting
+        return: Meeting
+    )
+
+)
+
+lov boolean (
+    name: BOOLEAN
+    source {
+        location: staticValues
+    }
+
+    entry false (
+        sequence: 2
+        display: No
+        return: FALSE
+    )
+
+    entry true (
+        sequence: 1
+        display: Yes
+        return: TRUE
+    )
+
+)
+
+lov crm-accounts (
+    name: CRM_ACCOUNTS
+    source {
+        tableName: CRM_ACCOUNTS
+    }
+    colMapping {
+        return: ACCOUNT_ID
+        display: NAME
+        defaultSort: NAME
+    }
+)
+
+lov crm-branches (
+    name: CRM_BRANCHES
+    source {
+        tableName: CRM_BRANCHES
+    }
+    colMapping {
+        return: BRANCH_ID
+        display: NAME
+        defaultSort: NAME
+    }
+)
+
+lov crm-contacts (
+    name: CRM_CONTACTS
+    source {
+        tableName: CRM_CONTACTS
+    }
+    colMapping {
+        return: CONTACT_ID
+        display: NAME
+        defaultSort: NAME
+    }
+)
+
+lov crm-customer-priorities (
+    name: CRM_CUSTOMER_PRIORITIES
+    source {
+        tableName: CRM_CUSTOMER_PRIORITIES
+    }
+    colMapping {
+        return: CUSTOMER_PRIORITY_ID
+        display: DESCRIPTION
+        defaultSort: DESCRIPTION
+    }
+)
+
+lov crm-customer-statuses (
+    name: CRM_CUSTOMER_STATUSES
+    source {
+        tableName: CRM_CUSTOMER_STATUSES
+    }
+    colMapping {
+        return: CUSTOMER_STATUS_ID
+        display: DESCRIPTION
+        defaultSort: DESCRIPTION
+    }
+)
+
+lov crm-customers (
+    name: CRM_CUSTOMERS
+    source {
+        tableName: CRM_CUSTOMERS
+    }
+    colMapping {
+        return: CUSTOMER_ID
+        display: NAME
+        defaultSort: NAME
+    }
+)
+
+lov crm-lead-sources (
+    name: CRM_LEAD_SOURCES
+    source {
+        tableName: CRM_LEAD_SOURCES
+    }
+    colMapping {
+        return: LEAD_SOURCE_ID
+        display: DESCRIPTION
+        defaultSort: DESCRIPTION
+    }
+)
+
+lov crm-lead-states (
+    name: CRM_LEAD_STATES
+    source {
+        tableName: CRM_LEAD_STATES
+    }
+    colMapping {
+        return: LEAD_STATE_ID
+        display: DESCRIPTION
+        defaultSort: DESCRIPTION
+    }
+)
+
+lov crm-lead-types (
+    name: CRM_LEAD_TYPES
+    source {
+        tableName: CRM_LEAD_TYPES
+    }
+    colMapping {
+        return: LEAD_TYPE_ID
+        display: DESCRIPTION
+        defaultSort: DESCRIPTION
+    }
+)
+
+lov crm-users (
+    name: CRM_USERS
+    source {
+        tableName: CRM_USERS
+    }
+    colMapping {
+        return: USER_ID
+        display: USERNAME
+        defaultSort: USERNAME
+    }
+)
+

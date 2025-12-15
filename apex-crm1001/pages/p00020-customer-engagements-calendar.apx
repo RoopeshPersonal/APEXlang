@@ -1,0 +1,58 @@
+page 20 (
+    name: Customer Engagements Calendar
+    alias: CUSTOMER-ENGAGEMENTS-CALENDAR
+    title: Customer Engagements Calendar
+    appearance {
+        pageTemplate: @/standard
+        templateOptions: #DEFAULT#
+    }
+    nav {
+        cursorFocus: doNotFocusCursor
+    }
+    security {
+        pageAccessProtection: argumentsMustHaveChecksum
+        formAutoComplete: false
+    }
+
+    region customer-engagements (
+        name: Customer Engagements
+        type: calendar
+        source {
+            location: localDatabase
+            tableName: CRM_ACTIVITY_LOGS
+        }
+        layout {
+            sequence: 10
+            slot: BODY
+        }
+        appearance {
+            template: @/standard
+            templateOptions: [
+                #DEFAULT#
+                t-Region--scrollBody
+            ]
+        }
+        settings {
+            displayCol: ACTIVITY_TYPE || ' - ' || SUBJECT
+            startDateCol: MEETING_DATE
+            endDateCol: MEETING_DATE
+            pkCol: ACTIVITY_LOG_ID
+            supplementalInfo: 
+                ```html
+                Detail: <strong>&DETAIL.</strong><br>
+                Customer: <strong>&CUSTOMER_ID.</strong><br>
+                User: <strong>&USER_ID.</strong><br>
+                Created On: <strong>&CREATED_ON.</strong><br>
+                Created By: <strong>&CREATED_BY.</strong>
+                ```
+            additionalCalendarViews: [
+                list
+                navigation
+            ]
+            cssClass: CALENDAR_COLOR
+            export: ical
+        }
+    )
+
+)
+

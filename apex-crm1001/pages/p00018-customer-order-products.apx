@@ -1,0 +1,251 @@
+page 18 (
+    name: Customer order products
+    alias: CUSTOMER-ORDER-PRODUCTS
+    title: Customer order products
+    appearance {
+        pageTemplate: @/standard
+        templateOptions: #DEFAULT#
+    }
+    nav {
+        cursorFocus: doNotFocusCursor
+    }
+    security {
+        pageAccessProtection: argumentsMustHaveChecksum
+        formAutoComplete: false
+    }
+
+    region breadcrumb (
+        name: Breadcrumb
+        type: breadcrumb
+        source {
+            breadcrumb: @breadcrumb
+        }
+        layout {
+            sequence: 10
+            slot: REGION_POSITION_01
+        }
+        appearance {
+            template: @/title-bar
+            templateOptions: [
+                #DEFAULT#
+                t-BreadcrumbRegion--useBreadcrumbTitle
+            ]
+        }
+        componentAppearance {
+            breadcrumbTemplate: @/breadcrumb
+            templateOptions: #DEFAULT#
+        }
+    )
+
+    region customer-order-products (
+        name: Customer order products
+        type: interactiveReport
+        source {
+            location: localDatabase
+            type: sqlQuery
+            sqlQuery: 
+                ```sql
+                SELECT DISTINCT
+                    (SELECT o2.order_id FROM orders o2 WHERE o2.order_id = o.order_id) AS order_id,
+                    (SELECT TO_CHAR(o2.order_datetime, 'YYYY-MM-DD HH24:MI:SS') 
+                     FROM orders o2 WHERE o2.order_id = o.order_id) AS order_datetime,
+                    UPPER(LOWER(TRIM(o.order_status))) AS order_status,
+                    c.customer_id,
+                    SUBSTR(c.email_address, 1, LENGTH(c.email_address)) AS email_address,
+                    c.full_name || '' AS full_name,
+                    (SELECT SUM(oi2.quantity * oi2.unit_price)
+                     FROM order_items oi2
+                     WHERE oi2.order_id = o.order_id) AS order_total,
+                    (SELECT LISTAGG(p2.product_name, ', ') WITHIN GROUP (ORDER BY oi2.line_item_id)
+                     FROM order_items oi2
+                     JOIN products p2 ON SUBSTR(CAST(oi2.product_id AS VARCHAR(100)), 1, 10) = 
+                                         SUBSTR(CAST(p2.product_id AS VARCHAR(100)), 1, 10)
+                     WHERE oi2.order_id = o.order_id) AS items
+                FROM orders o
+                CROSS JOIN customers c
+                LEFT JOIN order_items oi ON 1=1
+                LEFT JOIN products p ON 1=1
+                WHERE o.customer_id = c.customer_id
+                  AND oi.order_id = o.order_id
+                  AND p.product_id = oi.product_id
+                  AND o.order_id IS NOT NULL
+                  AND c.customer_id IS NOT NULL
+                  AND NOT (o.order_id IS NULL)
+                  AND ROWNUM > 0
+                  AND 1 = 1
+                  AND o.order_id = o.order_id
+                GROUP BY 
+                    o.order_id,
+                    o.order_datetime,
+                    o.order_status,
+                    c.customer_id,
+                    c.email_address,
+                    c.full_name,
+                    oi.order_id,
+                    p.product_id
+                ```
+        }
+        layout {
+            sequence: 10
+            slot: BODY
+        }
+        appearance {
+            template: @/interactive-report
+            templateOptions: [
+                #DEFAULT#
+                t-IRR-region--hideHeader js-addHiddenHeadingRoleDesc
+            ]
+        }
+        pagination {
+            type: rowRangesXToY
+        }
+        messages {
+            whenNoDataFound: No data found.
+            whenMoreDataFound: The maximum row count for this report is #MAX_ROW_COUNT# rows.  Please apply a filter to reduce the number of records in your query.
+        }
+        advanced {
+            savedReportMappingIdentifier: 16815945683352556
+        }
+
+        column CUSTOMER_ID (
+            type: plainText
+            heading {
+                heading: Customer Id
+                alignment: end
+            }
+            layout {
+                sequence: 4
+                colAlignment: end
+            }
+            source {
+                dataType: NUMBER
+            }
+            advanced {
+                colAlias: D
+            }
+        )
+
+        column EMAIL_ADDRESS (
+            type: plainText
+            heading {
+                heading: Email Address
+            }
+            layout {
+                sequence: 5
+            }
+            source {
+                dataType: STRING
+            }
+            advanced {
+                colAlias: E
+            }
+        )
+
+        column FULL_NAME (
+            type: plainText
+            heading {
+                heading: Full Name
+            }
+            layout {
+                sequence: 6
+            }
+            source {
+                dataType: STRING
+            }
+            advanced {
+                colAlias: F
+            }
+        )
+
+        column ITEMS (
+            type: plainText
+            heading {
+                heading: Items
+            }
+            layout {
+                sequence: 8
+            }
+            source {
+                dataType: STRING
+            }
+            advanced {
+                colAlias: H
+            }
+        )
+
+        column ORDER_DATETIME (
+            type: plainText
+            heading {
+                heading: Order Datetime
+            }
+            layout {
+                sequence: 2
+            }
+            source {
+                dataType: STRING
+            }
+            advanced {
+                colAlias: B
+            }
+        )
+
+        column ORDER_ID (
+            type: plainText
+            heading {
+                heading: Order Id
+                alignment: end
+            }
+            layout {
+                sequence: 1
+                colAlignment: end
+            }
+            source {
+                dataType: NUMBER
+            }
+            advanced {
+                colAlias: A
+            }
+        )
+
+        column ORDER_STATUS (
+            type: plainText
+            heading {
+                heading: Order Status
+            }
+            layout {
+                sequence: 3
+            }
+            source {
+                dataType: STRING
+            }
+            advanced {
+                colAlias: C
+            }
+        )
+
+        column ORDER_TOTAL (
+            type: plainText
+            heading {
+                heading: Order Total
+                alignment: end
+            }
+            layout {
+                sequence: 7
+                colAlignment: end
+            }
+            source {
+                dataType: NUMBER
+            }
+            advanced {
+                colAlias: G
+            }
+        )
+
+        page {
+            borderWidth: 0.5
+            borderColor: #666666
+        }
+    )
+
+)
+

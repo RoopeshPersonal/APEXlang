@@ -1,0 +1,35 @@
+file icons/app-icon-144-rounded.png (
+    attributes {
+        mimeType: image/png
+        fileCharSet: utf-8
+    }
+)
+
+file icons/app-icon-192.png (
+    attributes {
+        mimeType: image/png
+        fileCharSet: utf-8
+    }
+)
+
+file icons/app-icon-256-rounded.png (
+    attributes {
+        mimeType: image/png
+        fileCharSet: utf-8
+    }
+)
+
+file icons/app-icon-32.png (
+    attributes {
+        mimeType: image/png
+        fileCharSet: utf-8
+    }
+)
+
+file icons/app-icon-512.png (
+    attributes {
+        mimeType: image/png
+        fileCharSet: utf-8
+    }
+)
+

@@ -1,0 +1,227 @@
+page 19 (
+    name: Revenue Report
+    alias: REVENUE-REPORT
+    title: Revenue Report
+    appearance {
+        pageTemplate: @/standard
+        templateOptions: #DEFAULT#
+    }
+    nav {
+        cursorFocus: doNotFocusCursor
+    }
+    security {
+        pageAccessProtection: argumentsMustHaveChecksum
+        formAutoComplete: false
+    }
+
+    region breadcrumb (
+        name: Breadcrumb
+        type: breadcrumb
+        source {
+            breadcrumb: @breadcrumb
+        }
+        layout {
+            sequence: 10
+            slot: REGION_POSITION_01
+        }
+        appearance {
+            template: @/title-bar
+            templateOptions: [
+                #DEFAULT#
+                t-BreadcrumbRegion--useBreadcrumbTitle
+            ]
+        }
+        componentAppearance {
+            breadcrumbTemplate: @/breadcrumb
+            templateOptions: #DEFAULT#
+        }
+    )
+
+    region revenue-report (
+        name: Revenue Report
+        type: interactiveReport
+        source {
+            location: localDatabase
+            type: sqlQuery
+            sqlQuery: 
+                ```sql
+                SELECT c.C_REGION, c.C_NAME, 
+                       SUM(lo.LO_REVENUE * (1 - lo.LO_DISCOUNT) + lo.LO_TAX * lo.LO_REVENUE) AS TOTAL_REVENUE,
+                       RANK() OVER (PARTITION BY c.C_REGION ORDER BY SUM(lo.LO_REVENUE) DESC) AS REVENUE_RANK,
+                       (SELECT SUM(LO_EXTENDEDPRICE) FROM LINEORDER lo2 WHERE lo2.LO_CUSTKEY = c.C_CUSTKEY AND lo2.LO_ORDERDATE > (SELECT MIN(D_DATEKEY) FROM DWDATE)) AS EXT_PRICE_SUM,
+                       AVG(lo.LO_QUANTITY) OVER (PARTITION BY c.C_REGION) AS AVG_QTY_REGION
+                FROM LINEORDER lo
+                JOIN CUSTOMER c ON lo.LO_CUSTKEY = c.C_CUSTKEY
+                JOIN DWDATE d ON lo.LO_ORDERDATE = d.D_DATEKEY
+                WHERE d.D_YEAR BETWEEN 1990 AND 2000
+                  AND EXISTS (SELECT 1 FROM PART p WHERE lo.LO_PARTKEY = p.P_PARTKEY AND p.P_SIZE > 0)
+                  AND lo.LO_DISCOUNT BETWEEN 0 AND 1
+                GROUP BY c.C_REGION, c.C_NAME, c.C_CUSTKEY, lo.LO_QUANTITY
+                ORDER BY TOTAL_REVENUE DESC
+                FETCH FIRST 500 ROWS ONLY;
+                ```
+        }
+        layout {
+            sequence: 10
+            slot: BODY
+        }
+        appearance {
+            template: @/interactive-report
+            templateOptions: [
+                #DEFAULT#
+                t-IRR-region--hideHeader js-addHiddenHeadingRoleDesc
+            ]
+        }
+        pagination {
+            type: rowRangesXToY
+        }
+        advanced {
+            savedReportMappingIdentifier: 6979346241678085
+        }
+
+        column AVG_QTY_REGION (
+            type: plainText
+            heading {
+                heading: Avg Quantity Region
+                alignment: end
+            }
+            layout {
+                sequence: 60
+                colAlignment: end
+            }
+            source {
+                dataType: NUMBER
+            }
+            advanced {
+                colAlias: F
+            }
+        )
+
+        column C_NAME (
+            type: plainText
+            heading {
+                heading: Customer Name
+            }
+            layout {
+                sequence: 20
+            }
+            source {
+                dataType: STRING
+            }
+            advanced {
+                colAlias: B
+            }
+        )
+
+        column C_REGION (
+            type: plainText
+            heading {
+                heading: Region
+            }
+            layout {
+                sequence: 10
+            }
+            source {
+                dataType: STRING
+            }
+            advanced {
+                colAlias: A
+            }
+        )
+
+        column EXT_PRICE_SUM (
+            type: plainText
+            heading {
+                heading: Extended Price Sum
+                alignment: end
+            }
+            layout {
+                sequence: 50
+                colAlignment: end
+            }
+            source {
+                dataType: NUMBER
+            }
+            advanced {
+                colAlias: E
+            }
+        )
+
+        column REVENUE_RANK (
+            type: plainText
+            heading {
+                heading: Revenue Rank
+                alignment: end
+            }
+            layout {
+                sequence: 40
+                colAlignment: end
+            }
+            source {
+                dataType: NUMBER
+            }
+            advanced {
+                colAlias: D
+            }
+        )
+
+        column TOTAL_REVENUE (
+            type: plainText
+            heading {
+                heading: Total Revenue
+                alignment: end
+            }
+            layout {
+                sequence: 30
+                colAlignment: end
+            }
+            source {
+                dataType: NUMBER
+            }
+            advanced {
+                colAlias: C
+            }
+        )
+
+        page {
+            borderWidth: 0.5
+            borderColor: #666666
+        }
+
+        savedReport 70541 (
+            visibility: primaryDefault
+            name: Primary Report
+            view {
+                rowsPerPage: 50
+            }
+
+            column AVG_QTY_REGION (
+                sequence: 6
+            )
+
+            column C_NAME (
+                sequence: 2
+            )
+
+            column C_REGION (
+                sequence: 1
+            )
+
+            column EXT_PRICE_SUM (
+                sequence: 5
+            )
+
+            column REVENUE_RANK (
+                sequence: 4
+            )
+
+            column TOTAL_REVENUE (
+                sequence: 3
+            )
+
+        )
+
+    )
+
+)
+

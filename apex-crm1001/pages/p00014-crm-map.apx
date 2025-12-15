@@ -1,0 +1,610 @@
+page 14 (
+    name: CRM Map
+    alias: CRM-MAP
+    title: CRM Map
+    appearance {
+        pageTemplate: @/left-side-column
+        templateOptions: #DEFAULT#
+    }
+    nav {
+        cursorFocus: doNotFocusCursor
+    }
+    security {
+        pageAccessProtection: argumentsMustHaveChecksum
+        formAutoComplete: false
+    }
+
+    region breadcrumb (
+        name: Breadcrumb
+        type: breadcrumb
+        source {
+            breadcrumb: @breadcrumb
+        }
+        layout {
+            sequence: 10
+            slot: REGION_POSITION_01
+        }
+        appearance {
+            template: @/title-bar
+            templateOptions: [
+                #DEFAULT#
+                t-BreadcrumbRegion--useBreadcrumbTitle
+            ]
+        }
+        componentAppearance {
+            breadcrumbTemplate: @/breadcrumb
+            templateOptions: #DEFAULT#
+        }
+    )
+
+    region button-bar (
+        name: Button Bar
+        type: staticContent
+        source {
+            htmlCode: <div id="active_facets"></div>
+        }
+        layout {
+            sequence: 10
+            slot: BODY
+        }
+        appearance {
+            template: @/buttons-container
+            templateOptions: [
+                #DEFAULT#
+                t-ButtonRegion--noPadding
+                t-ButtonRegion--noUI
+            ]
+        }
+    )
+
+    region map (
+        name: CRM Map
+        type: map
+        source {
+            location: localDatabase
+            type: sqlQuery
+            sqlQuery: 
+                ```sql
+                select 'CUSTOMER' as entity_type,
+                       c.customer_id as entity_id,
+                       a.account_id,
+                       a.name as account_name,
+                       c.name as entity_name,
+                       null as lead_type_id,
+                       null as lead_type_desc,
+                       null as lead_state_id,
+                       null as lead_state_desc,
+                       null as lead_source_id,
+                       null as lead_source_desc,
+                       c.customer_status_id,
+                       cs.description as customer_status_desc,
+                       c.customer_priority_id,
+                       cp.description as customer_priority_desc,
+                       null as opportunity_stage_id,
+                       null as opportunity_stage_desc,
+                       null as opportunity_category_id,
+                       null as opportunity_category_desc,
+                       c.branch_id,
+                       b.name as branch_name,
+                       c.user_owner_id,
+                       u.username as user_owner_name,
+                       null as budget,
+                       a.city,
+                       a.state,
+                       null as details,
+                       null as status_date,
+                       a.lat cust_lat,
+                       a.lon cust_long,
+                       null opp_lat,
+                       null opp_long,
+                       null lead_lat,
+                       null lead_long
+                  from crm_customers c
+                  join crm_accounts a on c.account_id = a.account_id
+                  left join crm_customer_statuses cs on c.customer_status_id = cs.customer_status_id
+                  left join crm_customer_priorities cp on c.customer_priority_id = cp.customer_priority_id
+                  left join crm_branches b on c.branch_id = b.branch_id
+                  left join crm_users u on c.user_owner_id = u.user_id
+                 where a.lat is not null
+                   and a.lon is not null
+                union all
+                select 'OPPORTUNITY' as entity_type,
+                       o.opportunity_id as entity_id,
+                       a.account_id,
+                       a.name as account_name,
+                       o.opportunity_name as entity_name,
+                       null as lead_type_id,
+                       null as lead_type_desc,
+                       null as lead_state_id,
+                       null as lead_state_desc,
+                       null as lead_source_id,
+                       null as lead_source_desc,
+                       null as customer_status_id,
+                       null as customer_status_desc,
+                       null as customer_priority_id,
+                       null as customer_priority_desc,
+                       o.opportunity_stage_id,
+                       ost.description as opportunity_stage_desc,
+                       o.opportunity_category_id,
+                       oc.description as opportunity_category_desc,
+                       o.account_id as branch_id,
+                       b.name as branch_name,
+                       o.user_owner_id,
+                       u.username as user_owner_name,
+                       o.value_amt as budget,
+                       a.city,
+                       a.state,
+                       o.details,
+                       o.current_stage_date as status_date,
+                       null cust_lat,
+                       null cust_long,
+                       a.lat opp_lat,
+                       a.lon opp_long,
+                       null lead_lat,
+                       null lead_long
+                  from crm_opportunities o
+                  join crm_accounts a on o.account_id = a.account_id
+                  left join crm_opportunity_stages ost on o.opportunity_stage_id = ost.opportunity_stage_id
+                  left join crm_opportunity_categories oc on o.opportunity_category_id = oc.opportunity_category_id
+                  left join crm_branches b on o.account_id = b.branch_id
+                  left join crm_users u on o.user_owner_id = u.user_id
+                 where a.lat is not null
+                   and a.lon is not null
+                   and not exists (select 1 from crm_customers c where c.account_id = a.account_id)
+                union all
+                select 'LEAD' as entity_type,
+                       l.lead_id as entity_id,
+                       a.account_id,
+                       a.name as account_name,
+                       null as entity_name,
+                       l.lead_type_id,
+                       lt.description as lead_type_desc,
+                       l.lead_state_id,
+                       ls.description as lead_state_desc,
+                       l.lead_source_id,
+                       lsrc.description as lead_source_desc,
+                       null as customer_status_id,
+                       null as customer_status_desc,
+                       null as customer_priority_id,
+                       null as customer_priority_desc,
+                       null as opportunity_stage_id,
+                       null as opportunity_stage_desc,
+                       null as opportunity_category_id,
+                       null as opportunity_category_desc,
+                       l.branch_id,
+                       b.name as branch_name,
+                       l.user_owner_id,
+                       u.username as user_owner_name,
+                       l.budget,
+                       a.city,
+                       a.state,
+                       l.details,
+                       l.status_date,
+                       null cust_lat,
+                       null cust_long,
+                       null opp_lat,
+                       null opp_long,
+                       a.lat lead_lat,
+                       a.lon lead_long
+                  from crm_leads l
+                  join crm_accounts a on l.account_id = a.account_id
+                  left join crm_lead_types lt on l.lead_type_id = lt.lead_type_id
+                  left join crm_lead_states ls on l.lead_state_id = ls.lead_state_id
+                  left join crm_lead_sources lsrc on l.lead_source_id = lsrc.lead_source_id
+                  left join crm_branches b on l.branch_id = b.branch_id
+                  left join crm_users u on l.user_owner_id = u.user_id
+                 where a.lat is not null
+                   and a.lon is not null
+                   and not exists (select 1 from crm_customers c where c.account_id = a.account_id)
+                   and not exists (select 1 from crm_opportunities o where o.account_id = a.account_id)
+                 order by account_id
+                ```
+        }
+        layout {
+            sequence: 10
+            slot: BODY
+        }
+        appearance {
+            template: @/standard
+            templateOptions: #DEFAULT#
+        }
+        controls {
+            options: [
+                scaleBar
+                infiniteMap
+                rectangleZoom
+            ]
+        }
+        attributes {
+            messagesPosition: below
+        }
+
+        layer customer (
+            name: Customers
+            layout {
+                sequence: 30
+            }
+            source {
+                location: regionSource
+            }
+            colMapping {
+                geometryColDataType: longitudeLatitude
+                longitudeCol: CUST_LONG
+                latitudeCol: CUST_LAT
+            }
+            pointObjects {
+                style: icon
+                iconSource: iconClass
+                iconCssClasses: fa-map-pin-triangle
+            }
+            appearance {
+                fillColor: #302d2a
+            }
+        )
+
+        layer lead (
+            name: Leads
+            layout {
+                sequence: 10
+            }
+            source {
+                location: regionSource
+            }
+            colMapping {
+                geometryColDataType: longitudeLatitude
+                longitudeCol: LEAD_LONG
+                latitudeCol: LEAD_LAT
+            }
+            pointObjects {
+                style: icon
+                iconSource: iconClass
+                iconCssClasses: fa-map-pin-circle
+            }
+            appearance {
+                fillColor: #302d2a
+            }
+        )
+
+        layer opportunity (
+            name: Opportunities
+            layout {
+                sequence: 20
+            }
+            source {
+                location: regionSource
+            }
+            colMapping {
+                geometryColDataType: longitudeLatitude
+                longitudeCol: OPP_LONG
+                latitudeCol: OPP_LAT
+            }
+            pointObjects {
+                style: icon
+                iconSource: iconClass
+                iconCssClasses: fa-map-pin-heart
+            }
+            appearance {
+                fillColor: #302d2a
+            }
+        )
+
+    )
+
+    region search (
+        name: Search
+        type: facetedSearch
+        source {
+            filteredRegion: @map
+        }
+        layout {
+            sequence: 10
+            slot: REGION_POSITION_02
+            colSpan: 4
+        }
+        appearance {
+            template: @/standard
+            templateOptions: [
+                #DEFAULT#
+                t-Region--noPadding
+                t-Region--hideHeader js-addHiddenHeadingRoleDesc
+                t-Region--scrollBody
+            ]
+        }
+        accessibility {
+            landmarkLabel: Filters
+        }
+        settings {
+            compactNosThreshold: 10000
+            showCurrentFacets: selector
+            currentFacetsSelector: #active_facets
+            showTotalRowCount: true
+            displayChartForTopNValues: 10
+        }
+
+        facet P14_BRANCH (
+            type: checkboxGroup
+            label {
+                label: Branch
+            }
+            lov {
+                type: distinctValues
+            }
+            layout {
+                sequence: 50
+            }
+            listEntries {
+                maxDisplayedEntries: 7
+            }
+            source {
+                databaseCol: BRANCH_NAME
+            }
+        )
+
+        facet P14_BUDGET_RANGE (
+            type: range
+            label {
+                label: Budget Range
+            }
+            lov {
+                type: staticValues
+                staticValues: STATIC:0-10000;0|10000,10001-50000;10001|50000,50001-100000;50001|100000,100001+;100001|
+            }
+            layout {
+                sequence: 70
+            }
+            source {
+                databaseCol: BUDGET
+                dataType: number
+            }
+        )
+
+        facet P14_CITY (
+            type: checkboxGroup
+            label {
+                label: City
+            }
+            lov {
+                type: distinctValues
+            }
+            layout {
+                sequence: 80
+            }
+            listEntries {
+                maxDisplayedEntries: 7
+            }
+            source {
+                databaseCol: CITY
+            }
+        )
+
+        facet P14_CUSTOMER_PRIORITY (
+            type: checkboxGroup
+            label {
+                label: Customer Priority
+            }
+            lov {
+                type: distinctValues
+            }
+            layout {
+                sequence: 65
+            }
+            listEntries {
+                maxDisplayedEntries: 7
+            }
+            source {
+                databaseCol: CUSTOMER_PRIORITY_DESC
+            }
+        )
+
+        facet P14_CUSTOMER_STATUS (
+            type: checkboxGroup
+            label {
+                label: Customer Status
+            }
+            lov {
+                type: distinctValues
+            }
+            layout {
+                sequence: 55
+            }
+            listEntries {
+                maxDisplayedEntries: 7
+            }
+            source {
+                databaseCol: CUSTOMER_STATUS_DESC
+            }
+        )
+
+        facet P14_ENTITY_TYPE (
+            type: checkboxGroup
+            label {
+                label: Entity Type
+            }
+            lov {
+                type: distinctValues
+            }
+            layout {
+                sequence: 15
+            }
+            listEntries {
+                maxDisplayedEntries: 2
+            }
+            source {
+                databaseCol: ENTITY_TYPE
+            }
+        )
+
+        facet P14_LEAD_SOURCE (
+            type: checkboxGroup
+            label {
+                label: Lead Source
+            }
+            lov {
+                type: distinctValues
+            }
+            layout {
+                sequence: 40
+            }
+            listEntries {
+                maxDisplayedEntries: 7
+            }
+            source {
+                databaseCol: LEAD_SOURCE_DESC
+            }
+        )
+
+        facet P14_LEAD_STATE (
+            type: checkboxGroup
+            label {
+                label: Lead State
+            }
+            lov {
+                type: distinctValues
+            }
+            layout {
+                sequence: 30
+            }
+            listEntries {
+                maxDisplayedEntries: 7
+            }
+            source {
+                databaseCol: LEAD_STATE_DESC
+            }
+        )
+
+        facet P14_LEAD_TYPE (
+            type: checkboxGroup
+            label {
+                label: Lead Type
+            }
+            lov {
+                type: distinctValues
+            }
+            layout {
+                sequence: 20
+            }
+            listEntries {
+                maxDisplayedEntries: 7
+            }
+            source {
+                databaseCol: LEAD_TYPE_DESC
+            }
+        )
+
+        facet P14_OPPORTUNITY_CATEGORY (
+            type: checkboxGroup
+            label {
+                label: Opportunity Category
+            }
+            lov {
+                type: distinctValues
+            }
+            layout {
+                sequence: 45
+            }
+            listEntries {
+                maxDisplayedEntries: 7
+            }
+            source {
+                databaseCol: OPPORTUNITY_CATEGORY_DESC
+            }
+        )
+
+        facet P14_OPPORTUNITY_STAGE (
+            type: checkboxGroup
+            label {
+                label: Opportunity Stage
+            }
+            lov {
+                type: distinctValues
+            }
+            layout {
+                sequence: 35
+            }
+            listEntries {
+                maxDisplayedEntries: 7
+            }
+            source {
+                databaseCol: OPPORTUNITY_STAGE_DESC
+            }
+        )
+
+        facet P14_OWNER (
+            type: checkboxGroup
+            label {
+                label: Owner
+            }
+            lov {
+                type: distinctValues
+            }
+            layout {
+                sequence: 60
+            }
+            listEntries {
+                maxDisplayedEntries: 7
+            }
+            source {
+                databaseCol: USER_OWNER_NAME
+            }
+        )
+
+        facet P14_SEARCH (
+            type: search
+            label {
+                label: Search
+            }
+            layout {
+                sequence: 10
+            }
+            source {
+                dbColumns: ACCOUNT_NAME,LEAD_TYPE_DESC,LEAD_STATE_DESC,LEAD_SOURCE_DESC,BRANCH_NAME,USER_OWNER_NAME,CITY,STATE,DETAILS
+            }
+        )
+
+        facet P14_STATE (
+            type: checkboxGroup
+            label {
+                label: State
+            }
+            lov {
+                type: distinctValues
+            }
+            layout {
+                sequence: 90
+            }
+            listEntries {
+                maxDisplayedEntries: 7
+            }
+            source {
+                databaseCol: STATE
+            }
+        )
+
+    )
+
+    button reset (
+        buttonName: RESET
+        label: Reset
+        layout {
+            sequence: 10
+            region: @button-bar
+            slot: NEXT
+        }
+        appearance {
+            buttonTemplate: @/text-with-icon
+            templateOptions: [
+                #DEFAULT#
+                t-Button--noUI
+                t-Button--iconLeft
+            ]
+            icon: fa-undo
+        }
+        behavior {
+            action: redirectThisApp
+            target: f?p=&APP_ID.:14:&APP_SESSION.::&DEBUG.:RR,14::
+            warnOnUnsavedChanges: doNotCheck
+        }
+    )
+
+)
+
